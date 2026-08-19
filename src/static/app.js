@@ -569,6 +569,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-buttons">
+        <span class="share-label">Share:</span>
+        <button class="share-btn share-twitter" data-activity="${name}" data-description="${details.description.replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;')}" title="Share on X (Twitter)">𝕏</button>
+        <button class="share-btn share-whatsapp" data-activity="${name}" data-description="${details.description.replace(/"/g, '&quot;').replace(/>/g, '&gt;').replace(/</g, '&lt;')}" title="Share on WhatsApp">💬</button>
+        <button class="share-btn share-copy" data-activity="${name}" title="Copy link">🔗</button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +592,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for share buttons
+    const shareUrl = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+    const shareText = `Check out ${name} at Mergington High School! ${details.description}`;
+
+    const twitterBtn = activityCard.querySelector(".share-twitter");
+    twitterBtn.addEventListener("click", () => {
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    });
+
+    const whatsappBtn = activityCard.querySelector(".share-whatsapp");
+    whatsappBtn.addEventListener("click", () => {
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    });
+
+    const copyBtn = activityCard.querySelector(".share-copy");
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        copyBtn.textContent = "✅";
+        setTimeout(() => {
+          copyBtn.textContent = "🔗";
+        }, 2000);
+      }).catch(() => {
+        copyBtn.textContent = "❌";
+        setTimeout(() => {
+          copyBtn.textContent = "🔗";
+        }, 2000);
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
